@@ -28,9 +28,8 @@ class KnowledgeSummaryController:
 
         {chunk}
 
-        Buatlah rangkuman yang berisi poin-poin penting, konsep utama, dan insight ilmiah dari bagian ini.
-        Hasilnya berupa teks narasi yang jelas dan runtut, tanpa kutipan dialog.
-        Dokumen ini akan menjadi referensi belajar, jadi jelaskan dengan bahasa yang mudah dimengerti dan terstruktur.
+        Buatlah ringkasan naratif yang padat dan jelas dari bagian ini.
+        Jelaskan konsep utama dan insight ilmiah dengan bahasa yang mudah dipahami, dalam maksimal 1 paragraf.
         """
         return self.llm_model.invoke(prompt)
     
