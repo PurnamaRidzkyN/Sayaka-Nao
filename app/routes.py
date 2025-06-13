@@ -2,17 +2,17 @@ import os
 from app import app
 from flask import render_template
 from flask import request
-
+from pprint import pprint
 from app.controllers.ChatController import ChatController
 from app.controllers.KnowledgeSummaryController import KnowledgeSummaryController
 from app.models.memory_model import MemoryManager
 from app.utils.markdown_helper import render_markdown
- 
 from datetime import datetime
+from flask import jsonify
 
 
 @app.route('/')
-def index():
+def home():
     return render_template('views/home.html')
 @app.route('/chat')
 def chat():
@@ -60,12 +60,10 @@ def revise_route():
 
 @app.route('/api/summary/remember', methods=['POST'])
 def remember_route():
-    data = request.get_json()
-    summary = data.get('summary')
-
-    controller = KnowledgeSummaryController()    
-    return controller.create_new_memories(summary)
-    
+    summary = request.data.decode('utf-8')
+    controller = KnowledgeSummaryController()
+    result = controller.create_new_memories(summary)
+    return jsonify(result)
     
 @app.route("/api/clear_memory", methods=["GET"])
 def clear_route():

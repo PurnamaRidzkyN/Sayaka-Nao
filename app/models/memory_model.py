@@ -37,6 +37,7 @@ class MemoryManager:
         timestamp = int(time.time())
         filename = f"summary_{timestamp}.txt"
         path = os.path.join(self.base_dir, filename)
+        print(summary)
         
         with open(path, "w", encoding="utf-8") as f:
             f.write(summary)

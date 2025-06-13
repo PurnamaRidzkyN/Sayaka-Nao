@@ -83,7 +83,7 @@ class ChatController:
         last_chat = "\n".join(
             [f"Tsuki: {dialogue['tsuki']}\nSayaka: {dialogue['sayaka']}" for dialogue in last_chat]
         )
-
+        print(memory_context)
         prompt = f"""{persona_learn}
         topik: {topic}
         Gunakan informasi relevan dari pembicaraan sebelumnya jika membantu:

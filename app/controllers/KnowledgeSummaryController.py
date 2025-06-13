@@ -109,7 +109,8 @@ class KnowledgeSummaryController:
         return dict hasil untuk response JSON di web.
         """
         try:
-            MemoryManager().add_memory(final_summary, important=True)
+            print("[INFO] Menyimpan ringkasan final sebagai memori baru...")
+            MemoryManager().add_memory(final_summary)
             return {
                 "status": "success",
                 "message": "Memori berhasil disimpan.",
