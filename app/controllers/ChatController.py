@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import json
-from app.models.memory_model import MemoryManager
+from app.models.long_memory import MemoryManager
 from langchain_google_genai import ChatGoogleGenerativeAI
 from app.persona import persona_learn, persona_daily, memory_triggers
 from flask import jsonify

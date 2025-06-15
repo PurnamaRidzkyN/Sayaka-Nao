@@ -1,23 +1,15 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
-from app.models.memory_model import MemoryManager
+from app.models.long_memory import MemoryManager
+from app.utils.chunk_helper import chunk_text
 
 class KnowledgeSummaryController:
-    def __init__(self, chunk_size=1000):
+    def __init__(self):
         """
         llm_model: objek model yang punya method invoke(prompt) -> hasil ringkasan
         chunk_size: jumlah karakter maksimal per chunk (bisa juga diubah ke token)
         """
         self.llm_model = ChatGoogleGenerativeAI(model="gemma-3-27b-it", max_tokens=None)
-        self.chunk_size = chunk_size
     
-    def chunk_text(self, text):
-        """
-        Memecah text menjadi chunk berdasarkan chunk_size karakter
-        """
-        chunks = []
-        for i in range(0, len(text), self.chunk_size):
-            chunks.append(text[i:i+self.chunk_size])
-        return chunks
     
     def summarize_chunk(self, chunk, topic):
         """
@@ -38,7 +30,7 @@ class KnowledgeSummaryController:
         Proses utama: chunking -> summarize tiap chunk -> gabung ringkasan -> summarize gabungan
         """
         full_text = MemoryManager().get_recent_memory( short_memory_filename)
-        chunks = self.chunk_text(full_text)
+        chunks = chunk_text(full_text)
         print(f"[INFO] Memecah teks menjadi {len(chunks)} chunk.")
         
         chunk_summaries = []

@@ -150,7 +150,7 @@
 </script>
 <script>
   async function sendMessage() {
-    const filename = {{ filename | tojson }};
+    const session_id = {{ session_id | tojson }}; 
     const topic = {{ topic | tojson }};
     const mode = {{ mode | tojson }};
     const message = userInput.value.trim();
@@ -185,7 +185,7 @@
         body: JSON.stringify({
           message: message,
           mode: mode,
-          filename: filename,
+          session_id: session_id,
           topic: topic
         })
       });

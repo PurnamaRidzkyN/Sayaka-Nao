@@ -2,48 +2,45 @@ import os
 from app import app
 from flask import render_template
 from flask import request
-from pprint import pprint
 from app.controllers.ChatController import ChatController
 from app.controllers.KnowledgeSummaryController import KnowledgeSummaryController
-from app.models.memory_model import MemoryManager
 from app.utils.markdown_helper import render_markdown
-from datetime import datetime
+from app.memory.session_registry import init_session_table, add_session
 from flask import jsonify
 
 
 @app.route('/')
 def home():
     return render_template('views/home.html')
+
 @app.route('/chat')
 def chat():
+    init_session_table()  
     topic = request.args.get('topic')
     mode = request.args.get('mode')
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    filename = f"short_memory_{date_str}_{topic}_{mode}.json"
-    return render_template('views/chat.html', topic=topic, mode=mode, filename=filename)
+    session_id =add_session(topic, mode) 
+    return render_template('views/chat.html', topic=topic, mode=mode,session_id=session_id)
+
 @app.route('/summary', methods=['POST'])
 def summary():
     topic = request.form.get('topic')
     mode = request.form.get('mode')
-    short_memory_filename = request.form.get('filename')
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    print(f"[INFO] Ringkasan untuk topik: {topic}, mode: {mode}, file: {short_memory_filename}")
-    markdown=KnowledgeSummaryController().summarize(short_memory_filename, topic)
-    filename = f"summary_{date_str}_{topic}_{mode}.json"
+    print(f"[INFO] Ringkasan untuk topik: {topic}, mode: {mode}, file: ")
+    markdown=KnowledgeSummaryController().summarize( topic)
     summary = render_markdown(markdown)
-    return render_template('views/summary.html', topic=topic, mode=mode, filename=filename ,summary=summary, markdown=markdown)
+    return render_template('views/summary.html', topic=topic, mode=mode ,summary=summary, markdown=markdown)
+
 @app.route('/api/chat', methods=['POST'])
 def chat_route():
     data = request.get_json()
     input = data.get('message')
-    filename = data.get('filename')
     topic = data.get('topic')
     mode = request.args.get('mode')
     controller = ChatController() 
     if mode == 'learn':
-        return controller.chat_learn(input, filename,topic)
+        return controller.chat_learn(input,topic)
     elif mode == 'daily':
-        return controller.chat_daily(input, filename, topic)
+        return controller.chat_daily(input, topic)
     else:
         return 'silahkan pilih mode chat yang benar', 400
 
@@ -71,6 +68,6 @@ def remember_route():
     result = controller.create_new_memories(summary)
     return jsonify(result)
     
-@app.route("/api/clear_memory", methods=["GET"])
-def clear_route():
-    return MemoryManager().clear_memory()
+# @app.route("/api/clear_memory", methods=["GET"])
+# def clear_route():
+#     return MemoryManager().clear_memory()
