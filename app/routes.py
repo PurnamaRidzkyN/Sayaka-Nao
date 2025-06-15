@@ -32,14 +32,20 @@ def summary():
     filename = f"summary_{date_str}_{topic}_{mode}.json"
     summary = render_markdown(markdown)
     return render_template('views/summary.html', topic=topic, mode=mode, filename=filename ,summary=summary, markdown=markdown)
-@app.route('/api/chat_learn', methods=['POST'])
+@app.route('/api/chat', methods=['POST'])
 def chat_route():
     data = request.get_json()
     input = data.get('message')
     filename = data.get('filename')
     topic = data.get('topic')
+    mode = request.args.get('mode')
     controller = ChatController() 
-    return controller.chat_learn(input, filename,topic)
+    if mode == 'learn':
+        return controller.chat_learn(input, filename,topic)
+    elif mode == 'daily':
+        return controller.chat_daily(input, filename, topic)
+    else:
+        return 'silahkan pilih mode chat yang benar', 400
 
 @app.route('/api/summary/summary', methods=['POST'])
 def summary_route():

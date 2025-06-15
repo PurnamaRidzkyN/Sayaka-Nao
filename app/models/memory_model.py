@@ -23,21 +23,38 @@ class MemoryManager:
 
         
 
+    from typing import List
+
     def chunk_text(self, text: str) -> List[str]:
         chunks = []
-        start = 0
-        while start < len(text):
-            end = start + self.max_chunk_size
-            chunks.append(text[start:end])
-            start = end
+        buffer = ""
+        
+        i = 0
+        while i < len(text):
+            buffer += text[i]
+            i += 1
+
+            # Kalau sudah lewat batas dan ada titik → potong
+            if len(buffer) >= self.max_chunk_size:
+                # Cek kalau ada titik di buffer
+                if '.' in buffer:
+                    last_dot = buffer.rfind('.') + 1  # Ambil sampai setelah titik
+                    chunks.append(buffer[:last_dot].strip())
+                    # Sisakan sisanya ke buffer baru
+                    buffer = buffer[last_dot:]
+
+        # Masukkan sisa akhir kalau ada titik
+        if buffer.strip():
+            chunks.append(buffer.strip())
+        
         return chunks
+
 
     def add_memory(self, summary: str):
         # Simpan summary ke file
         timestamp = int(time.time())
         filename = f"summary_{timestamp}.txt"
         path = os.path.join(self.base_dir, filename)
-        print(summary)
         
         with open(path, "w", encoding="utf-8") as f:
             f.write(summary)
