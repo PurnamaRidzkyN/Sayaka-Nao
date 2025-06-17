@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import json
-from app.models.long_memory import MemoryManager
+from app.memory.long_memory import MemoryManager
 from langchain_google_genai import ChatGoogleGenerativeAI
 from app.persona import persona_learn, persona_daily, memory_triggers
 from flask import jsonify
@@ -26,7 +26,7 @@ class ChatController:
             print(f"[WARNING] File {path} tidak ditemukan. Memori awal kosong.")
             return []
 
-    def chat_daily(self, user_input,filename,topic):
+    def chat_daily(self, user_input,session_id,topic):
       
         memory_context = ModuleNotFoundError.get_memory(user_input)
 
@@ -67,11 +67,11 @@ class ChatController:
         
      
         bot_reply = self.gemini.invoke(prompt)
-        MemoryManager().add_to_short_memory(filename,user_input, bot_reply.content)
+        MemoryManager().add_to_short_memory(session_id,user_input, bot_reply.content)
         return jsonify({"reply":  bot_reply.content})
     
     
-    def chat_learn(self, user_input,filename,topic):
+    def chat_learn(self, user_input,session_id,topic):
         
         if self.needs_memory_lookup(user_input) == 1:
             # Jika perlu melihat memori, ambil konteks dari memori
@@ -79,7 +79,7 @@ class ChatController:
         else:
             # Jika tidak perlu, gunakan konteks kosong
             memory_context = ""
-        last_chat = MemoryManager().get_recent_memory(filename)
+        last_chat = MemoryManager().get_recent_memory(session_id)
         last_chat = "\n".join(
             [f"Tsuki: {dialogue['tsuki']}\nSayaka: {dialogue['sayaka']}" for dialogue in last_chat]
         )
@@ -108,7 +108,7 @@ class ChatController:
         Tsuki: {user_input}
         Sayaka:"""
         bot_reply = self.gemini.invoke(prompt)
-        MemoryManager().add_to_short_memory(filename, user_input, bot_reply.content)
+        MemoryManager().add_to_short_memory(session_id, user_input, bot_reply.content)
         return jsonify({"reply":  bot_reply.content})
     
     def needs_memory_lookup(self,question):

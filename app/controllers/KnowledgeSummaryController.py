@@ -1,5 +1,5 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
-from app.models.long_memory import MemoryManager
+from app.memory.long_memory import MemoryManager
 from app.utils.chunk_helper import chunk_text
 
 class KnowledgeSummaryController:

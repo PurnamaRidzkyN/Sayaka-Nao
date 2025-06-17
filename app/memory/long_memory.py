@@ -8,7 +8,7 @@ import uuid
 
 class longMemory:
     def __init__(self,
-                 chroma_path: str = "./memory_db",
+                 chroma_path: str = "./memory/memory_db",
                  collection_name: str = "knowledge_memory",
                  model_name: str = "all-MiniLM-L6-v2"):
         self.chroma_client = chromadb.PersistentClient(path=chroma_path)

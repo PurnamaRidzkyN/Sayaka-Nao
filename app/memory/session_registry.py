@@ -2,22 +2,7 @@
 import sqlite3
 import time
 
-def init_session_table(db_path="memory_meta.db"):
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS sessions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        start_ts INTEGER,
-        end_ts INTEGER,
-        topic TEXT,
-        mode TEXT
-    )
-    """)
-    conn.commit()
-    conn.close()
-
-def add_session(topic: str, mode: str, db_path="memory_meta.db"):
+def add_session(topic: str, mode: str, db_path="./memory/memory_meta.db"):
     import sqlite3
     import time
 
@@ -36,4 +21,19 @@ def add_session(topic: str, mode: str, db_path="memory_meta.db"):
 
     return session_id
 
+def update_session_end(session_id: int, db_path="memory_meta.db"):
+    import sqlite3
+    import time
+
+    end_ts = int(time.time())
+
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("""
+    UPDATE sessions
+    SET end_ts = ?
+    WHERE id = ?
+    """, (end_ts, session_id))
+    conn.commit()
+    conn.close()
 

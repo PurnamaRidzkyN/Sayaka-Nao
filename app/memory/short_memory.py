@@ -12,7 +12,7 @@ import sqlite3
 
 class longMemory:
     def __init__(self,
-                 chroma_path: str = "./memory_db",
+                 chroma_path: str = "./memory/memory_db",
                  collection_name: str = "short_memory",
                  model_name: str = "all-MiniLM-L6-v2"):
         self.chroma_client = chromadb.PersistentClient(path=chroma_path)
